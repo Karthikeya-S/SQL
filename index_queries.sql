@@ -70,6 +70,34 @@ CREATE TABLE leads(
     UNIQUE email(email),
     PRIMARY KEY(lead_id)
 );
+DROP INDEX email on leads ALGORITHM = INPLACE LOCK = DEFAULT;
+describe leads;
+show indexes from employees in wileyclassic;
+-- Filter index information
+SHOW indexes from table_name where CONDITION;
+show indexes from employees where VISIBLE = 'NO';
+-- Using products table
+-- Find the products whose names start with string
+SELECT productName from products LIMIT 10;
+EXPLAIN FORMAT=JSON SELECT productName, buyPrice,msrp
+FROM
+    products
+WHERE
+    productName LIKE '1970%';
+SELECT COUNT(distinct LEFT(productName,20)) unique_rows
+FROM products;
+explain  SELECT COUNT(distinct LEFT(productName,20)) unique_rows
+FROM products;
+CREATE INDEX idx_productName on products(productName);
+explain format=JSON SELECT COUNT(distinct LEFT(productName,20)) unique_rows
+FROM products;
+SELECT productName, buyPrice,msrp
+FROM
+    products
+WHERE
+    productName LIKE '1970%';
+
+create UNIQUE INDEX index_name on table_name(col1,col2);
 
 CREATE TABLE contacts(
     contact_id INT AUTO_INCREMENT,
@@ -87,7 +115,37 @@ CREATE TABLE table_name(
     column_list,
     INDEX(column_name(length))
 );
+CREATE INDEX name on employees(lastName, firstName);
+select firstName, lastName, email
+FROM employees WHERE lastName  'Patterson';
+explain FORMAT= JSON select firstName, lastName, email
+FROM employees WHERE lastName Like 'Patterson';
+-- invisible:
+CREATE INDEX index_name on table_name(col1,col2) [INVISIBLE | VISIBLE];
+CREATE INDEX index_name on table_name(col1,col2) INVISIBLE;
+alter TABLE table_name alter INDEX index_name [Invisible | visible];
+alter TABLE employees alter index extension visible;
 
+--------------------------------------------------------------------------------
+
+-- Descending INDEX
+CREATE TABLE t(
+    a INT NOT NULL,
+    b INT NOT NULL 
+);
+
+-- Clustered Index
+SELECT firstName from employees FORCE INDEX (extension) where condition;
+
+select productName, buyPrice
+FROM products where buyPrice between 10 and 80
+order by buyPrice;
+
+explain FORMAT=JSON select productName, buyPrice
+FROM products where buyPrice between 10 and 80
+order by buyPrice;
+
+CREATE INDEX idx_buyPrice on products(buyPrice) VISIBLE;
 CREATE TABLE IF NOT EXISTS contacts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
